@@ -2,237 +2,536 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>SH Engine – Funktionsweise & Ansatz</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <meta name="description" content="Die SH Engine analysiert nicht einzelne Infrastrukturen, sondern deren Wirkungen und Abhängigkeiten. Ein System-of-Systems-Ansatz für strukturelle Resilienz in Schleswig-Holstein.">
-
+  <meta name="description" content="Die SH-Engine verbindet amtliche Geodaten, Energiedaten und Demografie offline auf einem Laptop. 94.611 Ställe. 6,4 Mio Solaranlagen. 25 Datenquellen. Open Source.">
+  <title>SH-Engine – Kommunale Daten-Intelligenz, offline</title>
   <style>
+    :root {
+      --bg: #ffffff;
+    --bg-card: #f7f9fc;
+    --text: #1a2332;
+    --text-sec: #4a5568;
+    --accent: #2a9d8f;
+    --orange: #d97706;
+    --red: #e63946;
+    --blue: #3b82f6;
+    --border: #e2e8f0;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: system-ui, sans-serif;
-      max-width: 900px;
-      margin: 2em auto;
-      padding: 0 1em;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.7;
-      color: #111;
-      background-color: #fff;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px;
     }
 
-    h1, h2, h3 {
-      color: #1f4e79;
-      margin-top: 1.4em;
-      margin-bottom: 0.5em;
+    /* Header */
+    .site-header {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
     }
-
-    h1 {
-      font-size: 2em;
-      border-bottom: 2px solid #1f4e79;
-      padding-bottom: 0.3em;
-    }
-
-    a {
-      color: #1f4e79;
+    .site-header a {
+      color: var(--text-sec);
       text-decoration: none;
+      font-size: 14px;
+    }
+    .site-header a:hover { color: var(--text); }
+
+    /* Hero */
+    .hero { margin-bottom: 60px; }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero .leitgedanke {
+      font-size: 20px;
+      color: var(--text);
+      font-weight: 500;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .hero .zahlen {
+      font-size: 15px;
+      color: var(--orange);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      line-height: 1.8;
     }
 
-    a:hover {
-      text-decoration: underline;
-    }
-
-    ul {
-      margin-top: 0.5em;
-      margin-bottom: 1em;
-      padding-left: 1.2em;
-    }
-
-    .content-box {
-      background-color: #f9f9fb;
-      padding: 1.2em 1.4em;
+    /* Voting Banner */
+    .voting-banner {
+      background: linear-gradient(135deg, var(--accent), var(--blue));
       border-radius: 8px;
-      border: 1px solid #ddd;
-      margin-top: 2em;
-    }
-
-    .note {
-      background-color: #eef3f8;
-      border-left: 4px solid #1f4e79;
-      padding: 1em 1.2em;
-      margin-top: 1.5em;
-    }
-
-    footer {
-      margin-top: 4em;
-      font-size: 0.9em;
-      color: #666;
+      padding: 24px 28px;
+      margin-bottom: 60px;
       text-align: center;
-      border-top: 1px solid #ccc;
-      padding-top: 1em;
+    }
+    .voting-banner p {
+      font-size: 15px;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    .voting-banner .badge {
+      display: inline-block;
+      font-size: 12px;
+      background: rgba(255,255,255,0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    .voting-banner a {
+      display: inline-block;
+      background: #2c5282;
+      color: #ffffff;
+      font-weight: 700;
+      padding: 12px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .voting-banner a:hover { opacity: 0.9; }
+    .voting-banner .termin {
+      font-size: 13px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 10px;
     }
 
+    /* Sections */
+    .section {
+      margin-bottom: 56px;
+    }
+    .section h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .section h2 .nr {
+      color: var(--accent);
+      font-weight: 400;
+    }
+    .section p {
+      font-size: 15px;
+      color: var(--text-sec);
+      margin-bottom: 12px;
+    }
+    .section p strong { color: var(--text); }
+
+    /* Szenario-Karten */
+    .szenario-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .szenario-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .szenario-card .card-img {
+      width: 100%;
+      height: auto;
+      background: var(--border);
+      display: block;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-sec);
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .szenario-card .card-img img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+    .szenario-card .card-body {
+      padding: 16px 20px;
+    }
+    .szenario-card .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .szenario-card .card-text {
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.6;
+    }
+    .szenario-card .card-zahl {
+      font-size: 13px;
+      color: var(--orange);
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    /* Daten-Verschneidung */
+    .verschneidung {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--orange);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+    }
+    .verschneidung .frage {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .verschneidung .antwort {
+      font-size: 13px;
+      color: var(--text-sec);
+    }
+    .verschneidung .quellen {
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 6px;
+    }
+
+    /* Datenquellen-Liste */
+    .quellen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .quelle {
+      font-size: 13px;
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .quelle .name { color: var(--text); font-weight: 600; }
+    .quelle .detail { color: var(--text-sec); font-size: 11px; }
+
+    /* Prinzipien */
+    .prinzip {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+    .prinzip .icon {
+      font-size: 24px;
+      flex-shrink: 0;
+      width: 40px;
+      text-align: center;
+    }
+    .prinzip .content { flex: 1; }
+    .prinzip .title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .prinzip .desc {
+      font-size: 13px;
+      color: var(--text-sec);
+      line-height: 1.6;
+    }
+
+    /* Zitat */
+    .kernaussage {
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      margin: 24px 0;
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 40px;
+      font-size: 13px;
+      color: var(--text-sec);
+      text-align: center;
+      line-height: 2;
+    }
+    .site-footer a { color: var(--accent); text-decoration: none; }
+    .site-footer a:hover { text-decoration: underline; }
+
+    /* Responsive */
     @media (max-width: 600px) {
-      h1 {
-        font-size: 1.5em;
-      }
+      .hero h1 { font-size: 28px; }
+      .hero .leitgedanke { font-size: 17px; }
+      .quellen-grid { grid-template-columns: 1fr; }
+      .container { padding: 24px 16px; }
     }
   </style>
 </head>
-
 <body>
+  <div class="container">
 
-<h1>Die SH Engine</h1>
+    <div class="site-header">
+      <a href="https://smartregion-sh.de/">&larr; SmartRegion.SH</a>
+    </div>
 
-<p><strong>Die SH Engine analysiert nicht einzelne Infrastrukturen – sondern ihre Wirkungen.</strong></p>
+    <!-- HERO -->
+    <div class="hero">
+      <h1>Die <span>SH-Engine</span></h1>
+      <div class="leitgedanke">
+        analysiert nicht einzelne Infrastrukturen &ndash;<br>
+        sondern ihre Wirkungen.
+      </div>
+      <div class="zahlen">
+        94.611 amtliche Stallstandorte · 6,4 Mio Solaranlagen · 2,58 Mio Geb&auml;ude<br>
+        85.192 Redispatch-Eintr&auml;ge · 25 Datenquellen · Offline · Auf einem Laptop
+      </div>
+    </div>
 
-<section class="content-box">
-  <h2>Warum es die SH Engine gibt</h2>
+    <!-- VOTING BANNER -->
+    <div class="voting-banner">
+      <div class="badge">Open Source Wettbewerb 2026</div>
+      <p>Die SH-Engine ist f&uuml;r den Community-Preis nominiert.</p>
+      <a href="https://open-source-wettbewerb.de/voting/sh-engine/">&rarr; Jetzt abstimmen</a>
+      <div class="termin">Community-Voting: 17.08. &ndash; 30.09.2026 · Preisverleihung: 15.10.2026, Smart Country Convention</div>
+    </div>
 
-  <p>
-  In klassischen Planungen wird häufig gefragt:
-  <em>„Ist eine Infrastruktur geschützt?“</em>
-  </p>
+    <!-- WAS DIE SH-ENGINE HEUTE KANN -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Was die SH-Engine heute kann</h2>
+      <p>Keine Konzepte. Keine Folien. Eine laufende Anwendung &ndash; offline, auf einem Laptop.</p>
 
-  <p>
-  Die SH Engine stellt eine andere, vorgelagerte Frage:
-  <em>„Was passiert, wenn sie ausfällt – und ab wann?“</em>
-  </p>
+      <div class="szenario-grid">
+        <div class="szenario-card">
+         <div class="card-img"><img src="img/sperrzonen.png" alt="Sperrzonen mit Tour-Berechnung"></div>
+          <div class="card-body">
+            <div class="card-title">Tierseuchenausbruch</div>
+            <div class="card-text">Klick auf die Karte = Ausbruchspunkt. Schutzzone (3&nbsp;km) und &Uuml;berwachungszone (10&nbsp;km) nach EU-VO 2020/687. Optimierte Besuchsroute f&uuml;r den Kreisveterin&auml;r.</div>
+            <div class="card-zahl">173 Betriebe in der Schutzzone &middot; 56 km Tour &middot; 102 Minuten</div>
+          </div>
+        </div>
+        <div class="szenario-card">
+           <div class="card-img"><img src="img/biogasanlagen.png" alt="Biogasanlagen"></div>
+          <div class="card-body">
+            <div class="card-title">Datenexplorer</div>
+            <div class="card-text">25 Datenquellen, bundesweit. Filter nach Bundesland, Gemeinde, Umkreis, beliebigen Attributen. Kein SQL, kein Fachwissen. Zwei Klicks.</div>
+            <div class="card-zahl">6,4 Mio Solaranlagen &middot; 24.193 Biogasanlagen &middot; 43.372 Windr&auml;der</div>
+          </div>
+        </div>
+        <div class="szenario-card">
+          <div class="card-img"><img src="img/hochwasser.png" alt="Hochwasser"></div>
+          <div class="card-body">
+            <div class="card-title">K&uuml;stenschutz &amp; Flutwirkung</div>
+            <div class="card-text">Slider von 0 bis 6 Meter. Sofort sichtbar: betroffene Einwohner, Feuerwehren unter Wasser, gef&auml;hrdete Infrastruktur.</div>
+            <div class="card-zahl">145.634 Menschen leben unter 0&nbsp;m NHN &middot; 316.005 bei +3&nbsp;m &middot; 474.354 bei +6&nbsp;m</div>
+          </div>
+        </div>
+        <div class="szenario-card">
+          <div class="card-img">[Screenshot: Ehrenamtserosion]</div>
+          <div class="card-body">
+            <div class="card-title">Feuerwehr-Ehrenamtserosion</div>
+            <div class="card-text">Demografische Kipppunkt-Prognose f&uuml;r jede Gemeinde. Wann reicht die Tagesst&auml;rke nicht mehr f&uuml;r eine Staffel?</div>
+            <div class="card-zahl">1.392 Feuerwehren analysiert &middot; Prognose bis +15 Jahre</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <p>
-  Der Berliner Stromausfall 2026 hat gezeigt:
-  Die Krise entsteht nicht am Schadort,
-  sondern dort, wo falsche Annahmen über Wirkungen getroffen werden.
-  </p>
-</section>
+    <!-- DATEN-VERSCHNEIDUNG -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Fragen, die heute niemand beantworten kann</h2>
+      <p>Die SH-Engine verbindet Datensilos, die sonst getrennt existieren &ndash; und macht Zusammenh&auml;nge sichtbar, die bisher unsichtbar waren.</p>
 
-<section class="content-box">
-  <h2>Die vorgelagerte Ebene</h2>
+      <div class="verschneidung">
+        <div class="frage">Welche Biogasanlage kann im Blackout das n&auml;chste Wasserwerk mit Notstrom versorgen?</div>
+        <div class="antwort">Biogasanlagen mit Schwarzstartf&auml;higkeit im Umkreis von 5&nbsp;km eines Wasserwerks &ndash; sofort auf der Karte.</div>
+        <div class="quellen">MaStR &times; Wasserversorger &times; OSRM-Routing</div>
+      </div>
+      <div class="verschneidung">
+        <div class="frage">Welche Batteriespeicher sind noch per LoRaWAN erreichbar, wenn das Internet ausf&auml;llt?</div>
+        <div class="antwort">103&nbsp;MW Speicher in Schuby &ndash; 200&nbsp;Meter vom n&auml;chsten Gateway. Im Blackout: Strom und Kommunikation an einem Ort.</div>
+        <div class="quellen">MaStR-Speicher &times; LoRaWAN-Gateways &times; Haversine-Distanz</div>
+      </div>
+      <div class="verschneidung">
+        <div class="frage">Gemeinden mit Senioren-Quote &uuml;ber 28% und Entfernung zum n&auml;chsten Arzt &uuml;ber 10&nbsp;km?</div>
+        <div class="antwort">Die verwundbarsten Orte bei einer Hitzewelle. &Uuml;ber 10.000 Hitzetote in Deutschland 2026.</div>
+        <div class="quellen">Zensus 2022 &times; &Auml;rzte &times; OSRM-Fahrzeit</div>
+      </div>
+      <div class="verschneidung">
+        <div class="frage">Welche Solarparks liegen im &Uuml;berschwemmungsgebiet bei +2&nbsp;m NHN?</div>
+        <div class="antwort">Installierte Leistung, die bei Sturmflut ausf&auml;llt &ndash; berechnet aus DEM-H&ouml;hendaten und MaStR-Standorten.</div>
+        <div class="quellen">MaStR-Solar &times; Copernicus DEM &times; Flutwirkung</div>
+      </div>
+      <div class="verschneidung">
+        <div class="frage">Wie viele Feuerwehren stehen bei +3&nbsp;m Wasserstand unter Wasser?</div>
+        <div class="antwort">275 von 1.392. Das Einsatzpersonal f&uuml;r 316.005 betroffene Einwohner sinkt um 20%.</div>
+        <div class="quellen">Feuerwehren &times; DEM &times; Zensus &times; Flutwirkung</div>
+      </div>
 
-  <p>
-  Bevor Maßnahmen, Material oder Zuständigkeiten greifen,
-  existiert eine Ebene, die oft nicht explizit betrachtet wird:
-  </p>
+      <div class="kernaussage">
+        Die Daten existieren. Sie liegen nur in getrennten Silos &ndash; beim Landesamt, bei der Bundesnetzagentur, beim Statistischen Amt, bei den &Uuml;bertragungsnetzbetreibern. Die SH-Engine ist die einzige Plattform, die alle diese Quellen offline in einer Abfrage verschneiden kann.
+      </div>
+    </div>
 
-  <ul>
-    <li>Abhängigkeiten zwischen Systemen</li>
-    <li>zeitliche Verzögerungen</li>
-    <li>Kaskadeneffekte</li>
-    <li>kritische Kipppunkte</li>
-  </ul>
+    <!-- WARUM OFFLINE -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Warum offline</h2>
+      <p>Der Berliner Stromausfall 2026 hat gezeigt: Die Krise entsteht nicht am Schadort, sondern dort, wo falsche Annahmen &uuml;ber Wirkungen getroffen werden.</p>
+      <p>Im Krisenfall ist die zentrale IT nicht erreichbar. Cloud-Dienste sind offline. Login-Server antworten nicht. Genau dann muss ein Krisenstab handlungsf&auml;hig sein.</p>
+      <p><strong>Deshalb l&auml;uft die SH-Engine vollst&auml;ndig offline, auf einem handels&uuml;blichen Laptop, ohne Cloud, ohne Internet, ohne Lizenzserver.</strong></p>
+      <p>Getestet auf 4 Plattformen: MacBook Air M5, MacBook M1, MacBook Neo (A18 Pro), iMac M1. Identische Ergebnisse, unterschiedliche Hardware, gleiche Analyse.</p>
+    </div>
 
-  <p>
-  Die SH Engine macht diese Ebene sichtbar – nicht abstrakt,
-  sondern konkret für Schleswig-Holstein.
-  </p>
-</section>
+    <!-- DATENQUELLEN -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> 25 Datenquellen, ein System</h2>
+      <div class="quellen-grid">
+        <div class="quelle"><span class="name">ALKIS</span><br><span class="detail">2,58 Mio Geb&auml;ude, 94.611 St&auml;lle &middot; LVermGeo SH</span></div>
+        <div class="quelle"><span class="name">MaStR</span><br><span class="detail">6,4 Mio Solar, 43k Wind, 24k Biogas &middot; BNetzA</span></div>
+        <div class="quelle"><span class="name">Zensus 2022</span><br><span class="detail">Demografie bis 100m-Gitter &middot; Stat. Amt</span></div>
+        <div class="quelle"><span class="name">Redispatch</span><br><span class="detail">85.192 Eintr&auml;ge, t&auml;glich aktualisiert &middot; Netztransparenz</span></div>
+        <div class="quelle"><span class="name">OSRM</span><br><span class="detail">Offline-Routing, Isochronen &middot; OpenStreetMap</span></div>
+        <div class="quelle"><span class="name">Copernicus DEM</span><br><span class="detail">H&ouml;henmodell 30m &middot; ESA</span></div>
+        <div class="quelle"><span class="name">Feuerwehren</span><br><span class="detail">29.013 bundesweit + 1.627 ALKIS &middot; OSM + LVermGeo</span></div>
+        <div class="quelle"><span class="name">Infrastruktur</span><br><span class="detail">&Auml;rzte, Apotheken, Schulen, Kitas, Bahnh&ouml;fe &middot; OSM + amtlich</span></div>
+      </div>
+      <p style="margin-top:16px;">Alle Daten: Open Data. Keine Lizenzkosten. Keine Beschaffungskosten. Quellenangabe gen&uuml;gt.</p>
+    </div>
 
-<section class="content-box">
-  <h2>System of Systems – einfach erklärt</h2>
+    <!-- SYSTEM OF SYSTEMS -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> System of Systems</h2>
+      <p>Infrastrukturen funktionieren nicht isoliert. Sie sind miteinander gekoppelt:</p>
 
-  <p>
-  Infrastrukturen funktionieren nicht isoliert.
-  Sie sind miteinander gekoppelt:
-  </p>
+      <div class="prinzip">
+        <div class="icon">⚡</div>
+        <div class="content">
+          <div class="title">Strom erm&ouml;glicht W&auml;rme</div>
+          <div class="desc">Fernw&auml;rme, W&auml;rmepumpen, Heizungssteuerungen &ndash; ohne Strom kein warmes Zuhause.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon">🏠</div>
+        <div class="content">
+          <div class="title">W&auml;rme erm&ouml;glicht Wohnen und Pflege</div>
+          <div class="desc">Pflegeheime, Krankenh&auml;user, Schulen &ndash; ab T+24h ohne Heizung nicht mehr betreibbar.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon">📡</div>
+        <div class="content">
+          <div class="title">Kommunikation steuert Einsatz</div>
+          <div class="desc">Mobilfunk, Internet, Leitstellen &ndash; ohne Kommunikation kein koordinierter Einsatz.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon">🚒</div>
+        <div class="content">
+          <div class="title">Mobilit&auml;t verbindet Personal und Hilfe</div>
+          <div class="desc">Stra&szlig;en, Br&uuml;cken, Treibstoff &ndash; ohne Mobilit&auml;t keine Versorgung.</div>
+        </div>
+      </div>
 
-  <ul>
-    <li>Strom ermöglicht Wärme</li>
-    <li>Wärme ermöglicht Wohnen und Pflege</li>
-    <li>Kommunikation steuert Einsatz und Versorgung</li>
-    <li>Mobilität verbindet Personal, Material und Hilfe</li>
-  </ul>
+      <p>F&auml;llt ein System aus, geraten andere unter Druck. Die SH-Engine betrachtet den <strong>Verbund</strong>, nicht die Einzelanlage.</p>
+    </div>
 
-  <p>
-  Fällt ein System aus, geraten andere unter Druck.
-  Die SH Engine betrachtet daher den <strong>Verbund</strong>,
-  nicht die Einzelanlage.
-  </p>
-</section>
+    <!-- ZEITACHSEN -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Zeitachsen statt Momentaufnahmen</h2>
+      <p>Wirkung entsteht &uuml;ber Zeit. Deshalb arbeitet die SH-Engine mit klaren Zeitachsen:</p>
 
-<section class="content-box">
-  <h2>Zeitachsen statt Momentaufnahmen</h2>
+      <div class="prinzip">
+        <div class="icon" style="color:var(--orange)">T+6h</div>
+        <div class="content">
+          <div class="desc">Erste Einschr&auml;nkungen. Personalprobleme. K&uuml;hlung f&auml;llt aus.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon" style="color:var(--red)">T+24h</div>
+        <div class="content">
+          <div class="desc">Ausfall von W&auml;rme, Pflege, Versorgung. Trinkwasserpuffer ersch&ouml;pft.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon" style="color:var(--red);font-weight:700">T+72h</div>
+        <div class="content">
+          <div class="desc">Strukturelle Krise. Vertrauensverlust. Eigeninitiative ersetzt koordinierte Hilfe.</div>
+        </div>
+      </div>
+    </div>
 
-  <p>
-  Wirkung entsteht über Zeit.
-  Deshalb arbeitet die SH Engine mit klaren Zeitachsen:
-  </p>
+    <!-- TECHNIK -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Technologie</h2>
 
-  <ul>
-    <li><strong>T+6 Stunden:</strong> erste Einschränkungen, Personalprobleme</li>
-    <li><strong>T+24 Stunden:</strong> Ausfall von Wärme, Pflege, Versorgung</li>
-    <li><strong>T+72 Stunden:</strong> strukturelle Krise, Vertrauensverlust</li>
-  </ul>
+      <div class="prinzip">
+        <div class="icon">🐍</div>
+        <div class="content">
+          <div class="title">Python / Flask</div>
+          <div class="desc">Backend mit API-Routen. Parametrisiertes SQL, keine String-Konkatenation.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon">🦆</div>
+        <div class="content">
+          <div class="title">DuckDB</div>
+          <div class="desc">Analytische Datenbank, spaltenbasiert, in-process. 10 Mio Haversine-Berechnungen in 0,019 Sekunden.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon">🗺️</div>
+        <div class="content">
+          <div class="title">Leaflet / MapLibre</div>
+          <div class="desc">Kartenvisualisierung mit offline Vektorkacheln. Kein Tile-Server im Internet.</div>
+        </div>
+      </div>
+      <div class="prinzip">
+        <div class="icon">🛣️</div>
+        <div class="content">
+          <div class="title">OSRM</div>
+          <div class="desc">Offline-Routing auf dem Stra&szlig;ennetz. Isochronen, TSP-Tourenplanung mit bis zu 750 Wegpunkten.</div>
+        </div>
+      </div>
+    </div>
 
-  <p>
-  Diese Zeitpunkte sind entscheidend für Priorisierung
-  und realistische Vorsorge.
-  </p>
-</section>
+    <!-- OPEN SOURCE -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Open Source</h2>
+      <p>Die SH-Engine ist lizenziert unter <strong>AGPL-3.0-only</strong>. Der Quellcode ist offen, die Daten sind Open Data, die Architektur ist dokumentiert.</p>
+      <p>Kein Vendor-Lock-in. Keine Cloud-Abh&auml;ngigkeit. Keine versteckten Kosten. Kommunale Lizenzen umfassen die fertige Datenbasis und Support. Digitale Souver&auml;nit&auml;t ist kein Schlagwort &ndash; sie ist eine Architekturentscheidung.</p>
+    </div>
 
-<section class="content-box">
-  <h2>Was die SH Engine bewusst nicht ist</h2>
+    <!-- WAS DIE SH-ENGINE NICHT IST -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Was die SH-Engine bewusst nicht ist</h2>
+      <p>Kein Alarm- oder Einsatzleitsystem. Keine operative Krisensteuerung. Kein Ersatz f&uuml;r Katastrophenschutz. Keine Bewertung einzelner Betreiber.</p>
+      <p><strong>Sie liefert Verst&auml;ndnis &ndash; keine Einsatzbefehle.</strong></p>
+    </div>
 
-  <ul>
-    <li>kein Alarm- oder Einsatzleitsystem</li>
-    <li>keine operative Krisensteuerung</li>
-    <li>kein Ersatz für Katastrophenschutz</li>
-    <li>keine Bewertung einzelner Betreiber</li>
-  </ul>
+    <!-- NOCHMAL VOTING -->
+    <div class="voting-banner">
+      <p>Die SH-Engine ist Open Source und nimmt am Open Source Wettbewerb 2026 teil.</p>
+      <a href="https://open-source-wettbewerb.de/voting/sh-engine/">&rarr; Jetzt f&uuml;r die SH-Engine abstimmen</a>
+      <div class="termin">Preisverleihung: 15. Oktober 2026 · Smart Country Convention, Berlin</div>
+    </div>
 
-  <p>
-  Sie liefert <strong>Verständnis</strong> – keine Einsatzbefehle.
-  </p>
-</section>
+    <!-- FOOTER -->
+    <div class="site-footer">
+      SH-Engine &middot; offen &middot; zivil &middot; technologieagnostisch<br>
+      &copy; 2026 Heinrich Rode, Fahrdorf &middot; <a href="https://smartregion-sh.de/">SmartRegion.SH</a> &middot; <a href="https://smartregion-sh.de/impressum.html">Impressum</a>
+    </div>
 
-<section class="content-box">
-  <h2>Beispiel Schleswig-Holstein: Landwirtschaft</h2>
-
-  <p>
-  Große Teile der Landwirtschaft gelten formal nicht als KRITIS.
-  </p>
-
-  <p>
-  Dennoch führt ein längerer Stromausfall zu:
-  </p>
-
-  <ul>
-    <li>Ausfall von Melkanlagen</li>
-    <li>Gefährdung von Tierwohl</li>
-    <li>Versorgungsengpässen</li>
-    <li>massivem wirtschaftlichen Schaden</li>
-  </ul>
-
-  <p>
-  Die SH Engine macht sichtbar,
-  warum diese Effekte <em>systemisch</em> relevant sind –
-  auch wenn sie außerhalb klassischer KRITIS-Definitionen liegen.
-  </p>
-</section>
-
-<section class="note">
-  <strong>Kernaussage:</strong><br>
-  KRITIS-Schutz bedeutet nicht nur Schutz vor Angriffen.<br>
-  Er bedeutet Funktionsfähigkeit trotz Ausfall.
-</section>
-
-<section class="content-box">
-  <h2>Status & Weiterentwicklung</h2>
-
-  <p>
-  Die SH Engine befindet sich im Aufbau.
-  </p>
-
-  <p>
-  Ziel ist eine schrittweise, nachvollziehbare Erweiterung –
-  gemeinsam mit Verwaltung, Kommunen und Fachakteuren.
-  </p>
-</section>
-
-<footer>
-  <p>
-    <a href="/">← zurück zu SmartRegion.SH</a><br><br>
-    SH Engine · offen · zivil · technologieagnostisch
-    © 2026 SmartRegion.SH – SH Engine ·
-    <a href="/impressum.html">Impressum</a>
-  </p>
-</footer>
-
+  </div>
 </body>
 </html>
