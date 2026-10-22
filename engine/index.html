@@ -67,6 +67,30 @@
       line-height: 1.8;
     }
 
+    /* Datenintegrationsgrafik */
+.datenarchitektur {
+    max-width: 700px;
+    width: 100%;
+    margin: 24px auto;
+    text-align: center;
+}
+
+.datenarchitektur img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.datenarchitektur figcaption {
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #666;
+}
+    
+    
+    
     /* Voting Banner */
     .voting-banner {
       background: linear-gradient(135deg, var(--accent), var(--blue));
@@ -299,13 +323,6 @@
       </div>
     </div>
 
-    <!-- VOTING BANNER -->
-    <div class="voting-banner">
-      <div class="badge">Open Source Wettbewerb 2026</div>
-      <p>Die SH-Engine ist f&uuml;r den Community-Preis nominiert.</p>
-      <a href="https://open-source-wettbewerb.de/voting/sh-engine/">&rarr; Jetzt abstimmen</a>
-      <div class="termin">Community-Voting: 17.08. &ndash; 30.09.2026 · Preisverleihung: 15.10.2026, Smart Country Convention</div>
-    </div>
 
     <!-- WAS DIE SH-ENGINE HEUTE KANN -->
     <div class="section">
@@ -322,6 +339,25 @@
           </div>
         </div>
       
+        
+      <div class="szenario-card">
+          <div class="card-img"><img src="img/notfallinfopunkte_nordfriesland_2026-09-13.jpg" alt="SH-Engine: NIP-Planung mit 105 Notfall-Infopunkten im Kreis Nordfriesland und Analyse einer Versorgungslücke" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-title">Notfallinformationspunkte (NIP)</div>
+            <div class="card-text">Die SH-Engine erfasst 865 amtlich veröffentlichte Notfall-Infopunkte in Schleswig-Holstein. Für 814 Standorte liegen geprüfte geografische Koordinaten vor; 51 ungeklärte Standorte sind transparent dokumentiert. Die Datenbasis ermöglicht räumliche Analysen zur Erreichbarkeit bei Strom- oder Kommunikationsausfall und unterstützt die Planung zusätzlicher Standorte.</div>
+            <div class="card-zahl">Praxisbeispiel Nordfriesland: 105 bestehende Notfall-Infopunkte · Versorgungslücken gezielt untersuchen</div>
+          </div>
+        </div>
+
+        <div class="szenario-card">
+          <div class="card-img"><img src="img/lautsprecherwagen_henstedt_ulzburg_2026-10-22.png" alt="SH-Engine: Lautsprecherpositionen und akustischer Schallteppich in Henstedt-Ulzburg" loading="lazy"></div>
+          <div class="card-body">
+            <div class="card-title">Bevölkerungswarnung mit Lautsprecherwagen</div>
+            <div class="card-text">Optimierte Lautsprecherwagenroute in Henstedt-Ulzburg mit 4.839 Lautsprecherpositionen und akustischer Ausbreitungsrechnung für 109.699 Empfängerpunkte. Die Emissionsannahmen sind vorläufig; die Darstellung ist keine amtlich validierte Lärmkarte.</div>
+            <div class="card-zahl">93,419 km Fahrtroute · 272 Minuten · 95,03 % geometrische Bevölkerungsabdeckung</div>
+          </div>
+        </div>
+        
         <div class="szenario-card">
          <div class="card-img"><img src="img/sperrzonen.png" alt="Sperrzonen mit Tour-Berechnung"></div>
           <div class="card-body">
@@ -356,8 +392,7 @@
             <div class="card-zahl">1.392 Feuerwehren analysiert &middot; Prognose bis +15 Jahre</div>
           </div>
         </div>
-      </>
-    </div>
+      </div>
 
     <!-- DATEN-VERSCHNEIDUNG -->
     <div class="section">
@@ -399,6 +434,21 @@
       <p>Getestet auf 4 Plattformen: MacBook Air M5, MacBook M1, MacBook Neo (A18 Pro), iMac M1. Identische Ergebnisse, unterschiedliche Hardware, gleiche Analyse.</p>
     </div>
 
+      <!-- ARCHITEKTUR- UND DATENINTEGRATIONSGRAFIK -->
+    <div class="section">
+      <h2><span class="nr">&mdash;</span> Viele Datensilos, eine SH-Engine</h2>
+      <p>ALKIS, Deiche, Zensus, Marktstammdatenregister, Redispatch, OpenStreetMap, OSRM und Copernicus: Die SH-Engine verbindet bislang getrennte Datenbestände für räumliche Analysen und Szenarien im Bevölkerungsschutz.</p>
+      <figure class="datenarchitektur">
+        <a href="img/sh_engine_datenintegration_zielbild_2026-10-22.png" target="_blank" rel="noopener noreferrer" aria-label="Datenintegrationsgrafik in voller Größe öffnen">
+          <img src="img/sh_engine_datenintegration_zielbild_2026-10-22.png" alt="Illustration der SH-Engine mit Datenebenen von ALKIS über Zensus und MaStR bis OSRM und Copernicus sowie beispielhaften Krisenstabfragen" loading="lazy">
+        </a>
+        <figcaption>Architektur- und Zielbild der SH-Engine. Die Illustration enthält auch geplante Funktionen, insbesondere die natürlichsprachliche Sprachabfrage. KI-Bildgenerierung © 2026 Heinrich Rode.</figcaption>
+      </figure>
+    </div>
+
+      
+      
+      
     <!-- DATENQUELLEN -->
     <div class="section">
       <h2><span class="nr">&mdash;</span> 25 Datenquellen, ein System</h2>
@@ -523,13 +573,6 @@
       <h2><span class="nr">&mdash;</span> Was die SH-Engine bewusst nicht ist</h2>
       <p>Kein Alarm- oder Einsatzleitsystem. Keine operative Krisensteuerung. Kein Ersatz f&uuml;r Katastrophenschutz. Keine Bewertung einzelner Betreiber.</p>
       <p><strong>Sie liefert Verst&auml;ndnis &ndash; keine Einsatzbefehle.</strong></p>
-    </div>
-
-    <!-- NOCHMAL VOTING -->
-    <div class="voting-banner">
-      <p>Die SH-Engine ist Open Source und nimmt am Open Source Wettbewerb 2026 teil.</p>
-      <a href="https://open-source-wettbewerb.de/voting/sh-engine/">&rarr; Jetzt f&uuml;r die SH-Engine abstimmen</a>
-      <div class="termin">Preisverleihung: 15. Oktober 2026 · Smart Country Convention, Berlin</div>
     </div>
 
     <!-- FOOTER -->
