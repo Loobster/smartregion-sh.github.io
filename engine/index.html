@@ -314,15 +314,6 @@
 
       <div class="szenario-grid">
         <div class="szenario-card">
-         <div class="card-img"><img src="img/FW-Routing.png" alt="Sperrzonen mit Tour-Berechnung"></div>
-          <div class="card-body">
-            <div class="card-title">Feuerwehr-Routing</div>
-            <div class="card-text">Route starten. Start und Endpunkt der Route wählen. Die Engine zeigt sofort die Fahrtroute an.</div>
-            <div class="card-zahl">Jetzt eine Sperrung simulieren und die Route neu berechnen. Die Ausweichroute wird sofort erstellt.</div>
-          </div>
-        </div>
-      
-        <div class="szenario-card">
          <div class="card-img"><img src="img/sperrzonen.png" alt="Sperrzonen mit Tour-Berechnung"></div>
           <div class="card-body">
             <div class="card-title">Tierseuchenausbruch</div>
@@ -330,8 +321,6 @@
             <div class="card-zahl">173 Betriebe in der Schutzzone &middot; 56 km Tour &middot; 102 Minuten</div>
           </div>
         </div>
-        
-        
         <div class="szenario-card">
            <div class="card-img"><img src="img/biogasanlagen.png" alt="Biogasanlagen"></div>
           <div class="card-body">
@@ -349,14 +338,14 @@
           </div>
         </div>
         <div class="szenario-card">
-          <div class="card-img"><img src="img/fw_ehrenamt.png" alt="FW_Ehrenamt"></div>
+          <div class="card-img">[Screenshot: Ehrenamtserosion]</div>
           <div class="card-body">
             <div class="card-title">Feuerwehr-Ehrenamtserosion</div>
             <div class="card-text">Demografische Kipppunkt-Prognose f&uuml;r jede Gemeinde. Wann reicht die Tagesst&auml;rke nicht mehr f&uuml;r eine Staffel?</div>
             <div class="card-zahl">1.392 Feuerwehren analysiert &middot; Prognose bis +15 Jahre</div>
           </div>
         </div>
-      </>
+      </div>
     </div>
 
     <!-- DATEN-VERSCHNEIDUNG -->
@@ -365,13 +354,18 @@
       <p>Die SH-Engine verbindet Datensilos, die sonst getrennt existieren &ndash; und macht Zusammenh&auml;nge sichtbar, die bisher unsichtbar waren.</p>
 
       <div class="verschneidung">
+        <div class="frage">Welche Biogasanlage kann im Blackout das n&auml;chste Wasserwerk mit Notstrom versorgen?</div>
+        <div class="antwort">Biogasanlagen mit Schwarzstartf&auml;higkeit im Umkreis von 5&nbsp;km eines Wasserwerks &ndash; sofort auf der Karte.</div>
+        <div class="quellen">MaStR &times; Wasserversorger &times; OSRM-Routing</div>
+      </div>
+      <div class="verschneidung">
         <div class="frage">Welche Batteriespeicher sind noch per LoRaWAN erreichbar, wenn das Internet ausf&auml;llt?</div>
         <div class="antwort">103&nbsp;MW Speicher in Schuby &ndash; 200&nbsp;Meter vom n&auml;chsten Gateway. Im Blackout: Strom und Kommunikation an einem Ort.</div>
         <div class="quellen">MaStR-Speicher &times; LoRaWAN-Gateways &times; Haversine-Distanz</div>
       </div>
       <div class="verschneidung">
         <div class="frage">Gemeinden mit Senioren-Quote &uuml;ber 28% und Entfernung zum n&auml;chsten Arzt &uuml;ber 10&nbsp;km?</div>
-        <div class="antwort">Die verwundbarsten Orte bei einer Hitzewelle. &Uuml;ber 15.800 Hitzetote in Deutschland 2026.</div>
+        <div class="antwort">Die verwundbarsten Orte bei einer Hitzewelle. &Uuml;ber 10.000 Hitzetote in Deutschland 2026.</div>
         <div class="quellen">Zensus 2022 &times; &Auml;rzte &times; OSRM-Fahrzeit</div>
       </div>
       <div class="verschneidung">
@@ -386,7 +380,7 @@
       </div>
 
       <div class="kernaussage">
-        Die Daten existieren. Sie liegen nur in getrennten Silos – beim Landesamt, bei der Bundesnetzagentur, beim Statistischen Amt, bei den Übertragungsnetzbetreibern. Die SH-Engine ist die einzige mir bekannte Plattform, die alle diese Quellen offline in einer Abfrage verschneiden kann.
+        Die Daten existieren. Sie liegen nur in getrennten Silos &ndash; beim Landesamt, bei der Bundesnetzagentur, beim Statistischen Amt, bei den &Uuml;bertragungsnetzbetreibern. Die SH-Engine ist die einzige Plattform, die alle diese Quellen offline in einer Abfrage verschneiden kann.
       </div>
     </div>
 
